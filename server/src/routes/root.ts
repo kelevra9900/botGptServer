@@ -1,11 +1,10 @@
-// Create Route
-
+// Create Route for the root of the application
 import { Router, Response, Request } from "express";
 import { connection } from "../utils/config";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/", (_req: Request, res: Response) => {
   res.json({ message: "Hello World!" });
 });
 
@@ -27,8 +26,13 @@ router.get("/getData", (_req: Request, res: Response) => {
   });
 });
 
-router.post("/createBot", async (req, res) => {
+router.post("/createBot", async (req: Request, res: Response) => {
   const { botGoal, telegramApiKey } = req.body;
+  if (!botGoal || !telegramApiKey) {
+    return res
+      .status(400)
+      .send("Please provide a bot goal and telegram api key");
+  }
   try {
     // trim the data to remove any whitespace
     const prompt = botGoal.trim();
