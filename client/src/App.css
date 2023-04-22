@@ -1,20 +1,20 @@
 .App {
   text-align: center;
-  background-image: url("./img/black.svg");
+  background-image: url('./img/black.svg');
   background-size: 100vw;
   padding-bottom: 5%;
 }
 
 .MuiOutlinedInput-notchedOutline {
-  border-color:white !important;
-  color:white !important;
+  border-color: white !important;
+  color: white !important;
 }
 
-#outlined-multiline-flexible-label{
+#outlined-multiline-flexible-label {
   color: white;
 }
 
-.MuiInputBase-input{
+.MuiInputBase-input {
   color: white !important;
 }
 

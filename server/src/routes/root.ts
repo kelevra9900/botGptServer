@@ -20,7 +20,6 @@ router.get("/", (_req: Request, res: Response) => {
 
 router.get("/getData", (_req: Request, res: Response) => {
   const selectQuery = "SELECT prompt, telegramApiKey, whatsappApiKey FROM bots";
-
   pool.query(selectQuery, (error: MysqlError | null, results: Bot[]) => {
     if (error) {
       console.error(error);
@@ -38,11 +37,15 @@ router.get("/getData", (_req: Request, res: Response) => {
 });
 
 router.post("/createBot", async (req: Request, res: Response) => {
-  const { botGoal, telegramApiKey, whatsappApiKey } =
-    req.body as CreateBotRequest;
+  const {
+    botGoal,
+    telegramApiKey,
+    whatsappApiKey = "",
+  } = req.body as CreateBotRequest;
 
   try {
-    if (!botGoal || !telegramApiKey || !whatsappApiKey) {
+    if (!botGoal && !telegramApiKey) {
+      console.log("Invalid Request", req.body);
       return res.status(400).json({
         message: "Invalid Request",
       });
