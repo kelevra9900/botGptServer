@@ -17,22 +17,33 @@ describe("Test the /getData path", () => {
   });
 });
 
-describe("Test the /createBot path", () => {
-  test("It should create a bot and return 201", async () => {
+describe("POST /createBot", () => {
+  it("should return 400 if request is invalid", async () => {
     const response = await request(app)
       .post("/createBot")
-      .send({ botGoal: "test", telegramApiKey: "test" });
-    expect(response.statusCode).toBe(201);
-    expect(response.text).toBe("Your Gpt4sales was created successfully!!");
+      .send({ botGoal: "", telegramApiKey: "", whatsappApiKey: "" });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe("Invalid Request");
   });
 
-  test("It should return 500 if there is an error", async () => {
-    const response = await request(app)
-      .post("/createBot")
-      .send({ botGoal: "", telegramApiKey: "" });
+  it("should create a new bot", async () => {
+    const response = await request(app).post("/createBot").send({
+      botGoal: "Test Bot",
+      telegramApiKey: "test_telegram_key",
+      whatsappApiKey: "test_whatsapp_key",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.status).toBe("success");
+  });
+
+  it("should return 400 if there is an error", async () => {
+    const response = await request(app).post("/createBot").send({
+      botGoal: 1,
+    });
+
     expect(response.statusCode).toBe(400);
-    expect(response.text).toBe(
-      "Please provide a bot goal and telegram api key"
-    );
+    expect(response.body.message).toBeDefined();
   });
 });
