@@ -10,6 +10,7 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "dev": "ts-node-dev --watch .env, src src/index.ts",
+    "seed": "ts-node-dev --watch .env, src src/seeding/seed.ts",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "lint": "npx eslint src"
