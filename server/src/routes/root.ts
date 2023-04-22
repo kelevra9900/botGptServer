@@ -1,6 +1,6 @@
 // Create Route
 
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { connection } from "../utils/config";
 
 const router = Router();
@@ -9,14 +9,20 @@ router.get("/", (req, res) => {
   res.json({ message: "Hello World!" });
 });
 
-router.get("/getData", (req, res) => {
+router.get("/getData", (_req: Request, res: Response) => {
   // Create a query compatible with TYPESCRIPT
   connection.query("SELECT * FROM bots", (err: any, results: any) => {
     if (err) {
-      console.log(err);
-      res.status(500).send("Error retrieving data");
+      return res
+        .status(500)
+        .json({ message: err.message, err: JSON.stringify(err) });
     } else {
-      res.json(results).status(200);
+      return res
+        .json({
+          data: results,
+          status: "success",
+        })
+        .status(200);
     }
   });
 });
