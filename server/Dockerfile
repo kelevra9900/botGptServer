@@ -1,20 +1,13 @@
-# Base image
-FROM node:alpine
+FROM node:14
 
-# Set the working directory
-WORKDIR /app/server
+WORKDIR /app
 
-# Copy the package and lock files to the container
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN npm install
+RUN yarn install --production
 
-# Copy the server files to the container
 COPY . .
 
-# Expose the port that the server will listen to
-EXPOSE 3000
+RUN yarn build
 
-# Start the server
-CMD [ "npm", "start" ]
+CMD ["yarn", "start"]
