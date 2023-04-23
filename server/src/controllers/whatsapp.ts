@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Process } from "../common/whatsapp/processMessage";
+import * as fs from "fs";
+const myConsole = new console.Console(fs.createWriteStream("./log.txt"));
 
 export const verifyToken = (req: Request | any, res: Response) => {
   try {
@@ -40,6 +42,7 @@ export const receivedMessage = (req: Request, res: Response) => {
 
     res.send("EVENT_RECEIVED");
   } catch (e) {
+    myConsole.log(e);
     res.send("EVENT_RECEIVED");
   }
 };
@@ -58,10 +61,10 @@ export function GetTextUser(messages: any) {
     } else if (typeInteractive == "list_reply") {
       text = interactiveObject["list_reply"]["title"];
     } else {
-      console.log("sin mensaje");
+      myConsole.log("sin mensaje");
     }
   } else {
-    console.log("sin mensaje");
+    myConsole.log("sin mensaje");
   }
   return text;
 }
