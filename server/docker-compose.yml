@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: chatbot-api
+    build: .
+    command: yarn start
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    restart: unless-stopped
