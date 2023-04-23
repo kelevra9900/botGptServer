@@ -12,6 +12,6 @@
   ],
   "scripts": {
     "start": "yarn workspace @bot/gpt-server start",
-    "build": "yarn workspace @bot/client build"
+    "build": "yarn workspace @bot/gpt-server build"
   }
 }
