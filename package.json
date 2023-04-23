@@ -1,17 +1,16 @@
 {
   "name": "@botgpt/project",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "https://github.com/kelevra9900/botGptServer.git",
   "author": "Roger Torres <torresroger445@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "@bot/gpt-server/*",
-    "@bot/client/*"
-  ],
   "scripts": {
-    "start": "yarn workspace @bot/gpt-server start",
-    "build": "yarn workspace @bot/gpt-server build"
-  }
+    "start": "yarn workspace server start",
+    "build": "yarn workspace server build"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }
