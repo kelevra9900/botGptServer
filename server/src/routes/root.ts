@@ -1,8 +1,9 @@
 // Create Route for the root of the application
 import { Router, Response, Request } from "express";
 import mysql, { MysqlError } from "mysql";
+import { verifyToken, receivedMessage } from "../controllers/whatsapp";
 
-import { Bot, CreateBotRequest } from "index";
+import { Bot, CreateBotRequest } from "../types";
 
 const router = Router();
 
@@ -12,6 +13,13 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),
+  waitForConnections: true,
+  connectionLimit: 1000,
+  queueLimit: 1000,
+});
+pool.on("connection", (connection) => {
+  console.log("New Connection");
+  connection.query("SET SESSION auto_increment_increment=1");
 });
 
 router.get("/", (_req: Request, res: Response) => {
@@ -95,5 +103,9 @@ router.post("/createBot", async (req: Request, res: Response) => {
     });
   }
 });
+
+router.get("/whatsapp", verifyToken);
+
+router.post("/whatsapp", receivedMessage);
 
 export default router;
