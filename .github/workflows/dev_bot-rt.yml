@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'bot-rt'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0B204B52E7194F6FA9388CC2211208B2 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_49825A87FEC84E1E8B8E968A79D1D5CE }}
           package: .
