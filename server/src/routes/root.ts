@@ -45,23 +45,38 @@ router.get("/getData", (_req: Request, res: Response) => {
 });
 
 router.post("/createBot", async (req: Request, res: Response) => {
-  const {
-    botGoal,
-    telegramApiKey,
-    whatsappApiKey = "",
-  } = req.body as CreateBotRequest;
+  const body = req.body as CreateBotRequest;
 
   try {
-    if (!botGoal && !telegramApiKey) {
+    if (!body.botGoal && !body.telegramApiKey) {
       console.log("Invalid Request", req.body);
       return res.status(400).json({
         message: "Invalid Request",
       });
     }
 
-    const prompt = botGoal.trim().toLowerCase();
-    const tlKey = telegramApiKey.trim().toLowerCase();
-    const wpKey = whatsappApiKey.trim().toLowerCase();
+    // If is number or is empty string
+    if (typeof body.botGoal !== "string" || !body.botGoal.trim()) {
+      return res.status(400).json({
+        message: "Invalid Request",
+      });
+    }
+
+    const prompt = body.botGoal.trim().toLowerCase();
+    const tlKey = body.telegramApiKey.trim().toLowerCase();
+    const wpKey = body.whatsappApiKey.trim().toLowerCase();
+
+    const data = {
+      prompt,
+      telegramApiKey: tlKey,
+      whatsappApiKey: wpKey,
+      assistant_content1: body.assistant_content1,
+      assistant_content2: body.assistant_content2,
+      assistant_content3: body.assistant_content3,
+      user_content1: body.user_content1,
+      user_content2: body.user_content2,
+      user_content3: body.user_content3,
+    };
 
     const connection = await new Promise<mysql.PoolConnection>(
       (resolve, reject) => {
@@ -75,9 +90,8 @@ router.post("/createBot", async (req: Request, res: Response) => {
       }
     );
 
-    const insertQuery =
-      "INSERT INTO bots (prompt, telegramApiKey, whatsappApiKey) VALUES (?, ?, ?)";
-    const insertValues = [prompt, tlKey, wpKey];
+    const insertQuery = "INSERT INTO bots SET ?";
+    const insertValues = data;
 
     const result = await new Promise<Bot>((resolve, reject) => {
       connection.query(insertQuery, insertValues, (err, results) => {

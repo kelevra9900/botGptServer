@@ -1,8 +1,10 @@
 import { Configuration, OpenAIApi } from "openai";
 
+const API_KEY = process.env.OPENAI_API_KEY;
+
 export async function GetMessageChatGPT(text: string) {
   const conf = new Configuration({
-    apiKey: "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",
+    apiKey: API_KEY,
   });
   const openai = new OpenAIApi(conf);
 

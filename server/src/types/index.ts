@@ -1,4 +1,6 @@
-export interface CreateBotRequest {
+import Joi from "joi";
+
+export interface CreateBotRequest extends Bot {
   botGoal: string;
   telegramApiKey: string;
   whatsappApiKey: string;
@@ -21,3 +23,15 @@ export interface Bot {
   whatsappApiKey?: string;
   whatsappId?: string;
 }
+
+export const CreateBotSchema = Joi.object<CreateBotRequest>({
+  botGoal: Joi.string().required(),
+  telegramApiKey: Joi.string().required(),
+  whatsappApiKey: Joi.string().required(),
+  assistant_content1: Joi.string().required(),
+  assistant_content2: Joi.string().required(),
+  assistant_content3: Joi.string().required(),
+  user_content1: Joi.string().required(),
+  user_content2: Joi.string().required(),
+  user_content3: Joi.string().required(),
+});

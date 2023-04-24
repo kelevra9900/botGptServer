@@ -1,24 +1,26 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import { Header } from '../Header';
 import TextField from '@mui/material/TextField';
-import { NavBar } from '../NavBar';
-
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { Header } from '../Header';
+import { NavBar } from '../NavBar';
 
 export const PromptForm = ({ showBot }) => {
   const [formValues, setFormValues] = useState({
     botGoal: '',
     telegramApiKey: '',
     whatsappApiKey: '',
-    userContent1: '',
-    userContent2: '',
-    userContent3: '',
-    assistantContent1: '',
-    assistantContent2: '',
-    assistantContent3: ''
+    user_content1: '',
+    user_content2: '',
+    user_content3: '',
+    assistant_content1: '',
+    assistant_content2: '',
+    assistant_content3: ''
   });
 
   const handleChange = (e) => {
@@ -28,14 +30,22 @@ export const PromptForm = ({ showBot }) => {
 
   const handleSendButton = async () => {
     try {
-      await fetch(`${process.env.REACT_APP_URL_API}/createBot`, {
+      const response = await fetch(`${process.env.REACT_APP_URL_API}/createBot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(formValues)
       });
+
+      console.log('response', response);
       showBot();
+      toast.success('Your bot has been created!', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true
+      });
     } catch (e) {
       console.log('OpenAI no mandó un formato JSON válido');
     }
@@ -107,7 +117,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training user query 1"
               type="text"
-              name="userContent1"
+              name="user_content1"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -116,7 +126,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training agent response 1"
               type="text"
-              name="assistantContent1"
+              name="assistant_content1"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -125,7 +135,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training user query 2"
               type="text"
-              name="userContent2"
+              name="user_content2"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -134,7 +144,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training agent response 2"
               type="text"
-              name="assistantContent2"
+              name="assistant_content2"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -143,7 +153,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training user query 3"
               type="text"
-              name="userContent3"
+              name="user_content3"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -152,7 +162,7 @@ export const PromptForm = ({ showBot }) => {
               id="outlined-multiline-flexible"
               label="Training agent response 3"
               type="text"
-              name="assistantContent3"
+              name="assistant_content3"
               onChange={handleChange}
               multiline
               maxRows={4}
@@ -172,6 +182,8 @@ export const PromptForm = ({ showBot }) => {
           </Button>
         </Stack>
       </Box>
+
+      <ToastContainer />
     </div>
   );
 };
