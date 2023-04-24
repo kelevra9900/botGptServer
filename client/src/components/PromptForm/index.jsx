@@ -30,7 +30,7 @@ export const PromptForm = ({ showBot }) => {
 
   const handleSendButton = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL_API}/createBot`, {
+      await fetch(`${process.env.REACT_APP_URL_API}/createBot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -38,16 +38,20 @@ export const PromptForm = ({ showBot }) => {
         body: JSON.stringify(formValues)
       });
 
-      console.log('response', response);
-      showBot();
       toast.success('Your bot has been created!', {
         position: 'top-center',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true
       });
+      showBot();
     } catch (e) {
-      console.log('OpenAI no mandó un formato JSON válido');
+      toast.error('OpenAI no mandó un formato JSON válido', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true
+      });
     }
   };
 
