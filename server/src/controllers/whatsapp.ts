@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Process } from "../common/whatsapp/processMessage";
 import * as fs from "fs";
+
 const myConsole = new console.Console(fs.createWriteStream("./log.txt"));
 
 export const verifyToken = (req: Request | any, res: Response) => {
@@ -67,4 +68,12 @@ export function GetTextUser(messages: any) {
     myConsole.log("sin mensaje");
   }
   return text;
+}
+
+// getMemorieGpt(sender, 3, respuesta[0]),
+function getMemorieGpt({ sender, number, response }): any {
+  throw new Error("Function not implemented.");
+}
+function readMemoriesGpt(sender: string, arg1: any): any {
+  throw new Error("Function not implemented.");
 }
