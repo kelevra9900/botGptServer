@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavBar } from '../NavBar';
+import './Mybots.css';
+import { Input } from 'reactstrap';
 import { styled } from '@mui/material/styles';
 
 import Table from '@mui/material/Table';
@@ -9,8 +11,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+
+import Box from '@mui/material/Box';
+import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
+
 export const Mybots = () => {
   const [bots, setBots] = useState([]);
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -43,9 +51,58 @@ export const Mybots = () => {
         'Content-Type': 'application/json'
       }
     });
+    const sanitize = await response.json();
+    setBots(sanitize.data);
 
-    const { data } = await response.json();
-    setBots(data);
+    console.log(sanitize.data);
+    // .then((res) => res.json())
+    // .then((data) => {
+    //   console.log(data);
+    //   // setBots(data);
+    // })
+    // .catch((err) => console.log(err));
+  };
+
+  const updateWhatsappEnable = async (whatsapp_enable, botId) => {
+    await fetch(`${process.env.REACT_APP_URL_API}/updateWhatsappEnable`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ whatsapp_enable, botId })
+    });
+  };
+
+  const updateTelegramEnable = async (telegram_enable, botId) => {
+    await fetch(`${process.env.REACT_APP_URL_API}}/updateTelegramEnable`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ telegram_enable, botId })
+    });
+  };
+
+  const handleChangeTelegram = (botId) => {
+    const updatedBots = bots.map((bot) => {
+      if (bot.id === botId) {
+        bot.telegram_enable = bot.telegram_enable === 1 ? 0 : 1;
+        updateTelegramEnable(bot.telegram_enable, bot.id);
+      }
+      return bot;
+    });
+    setBots(updatedBots);
+  };
+
+  const handleChangeWhatsapp = (botId) => {
+    const updatedBots = bots.map((bot) => {
+      if (bot.id === botId) {
+        bot.whatsapp_enable = bot.whatsapp_enable === 1 ? 0 : 1;
+        updateWhatsappEnable(bot.whatsapp_enable, bot.id);
+      }
+      return bot;
+    });
+    setBots(updatedBots);
   };
 
   return (
@@ -59,6 +116,9 @@ export const Mybots = () => {
               <StyledTableCell align="center">Id</StyledTableCell>
               <StyledTableCell align="center">Prompt&nbsp;</StyledTableCell>
               <StyledTableCell align="center">TelegramApiKey&nbsp;</StyledTableCell>
+              <StyledTableCell align="center">WhatsappApiKey&nbsp;</StyledTableCell>
+              <StyledTableCell align="center">WhatsappEnable&nbsp;</StyledTableCell>
+              <StyledTableCell align="center">TelegramEnable&nbsp;</StyledTableCell>
               <StyledTableCell align="center">Creation Status&nbsp;</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -72,7 +132,45 @@ export const Mybots = () => {
                 </StyledTableCell>
                 <StyledTableCell align="center">{bot.prompt}</StyledTableCell>
                 <StyledTableCell align="center">{bot.telegramApiKey}</StyledTableCell>
-                <StyledTableCell align="center">{bot.creation_status}</StyledTableCell>
+                <StyledTableCell align="center">
+                  <Box
+                    component="form"
+                    sx={{
+                      '& > :not(style)': { m: 1, width: '25ch' }
+                    }}
+                    noValidate
+                    autoComplete="off">
+                    <TextField
+                      className="whatsappApiKey"
+                      name="whatsappApikey"
+                      type="text"
+                      id={`${bot.id}`}
+                    />
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Switch
+                    {...label}
+                    checked={bot.whatsapp_enable == 1 ? true : false}
+                    onChange={() => {
+                      handleChangeWhatsapp(bot.id);
+                    }}
+                  />
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Switch
+                    {...label}
+                    checked={bot.telegram_enable == 1 ? true : false}
+                    onChange={() => {
+                      handleChangeTelegram(bot.id);
+                    }}
+                  />
+                </StyledTableCell>
+
+                <StyledTableCell align="center">
+                  <Input type="checkbox" id={`check${bot.id}`} />
+                </StyledTableCell>
+                {/* <StyledTableCell align='center'>{bot.bot_runnning}</StyledTableCell>*/}
               </StyledTableRow>
             ))}
           </TableBody>
