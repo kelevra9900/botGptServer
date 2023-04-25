@@ -91,3 +91,26 @@ d) Diamante shops hará del placer y los juguetes sexuales tu proximo negocio re
 g) La página web de diamante shops es: https://www.diamanteferomonas.com/socios
 
 El Lead tiene la siguiente pregunta para Kelly a través de la conversación:
+
+
+CREATE TABLE `intents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender` varchar(13) DEFAULT NULL,
+  `intent` float DEFAULT NULL,
+  `variable_temporal` text,
+  `variable_temporal3` text,
+  `variable_temporal2` text,
+  `variable_temporal1` text,
+  `idopenai` text,
+  `gpt_temporal` text,
+  `gpt_temporal1` text,
+  `gpt_temporal2` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2439 DEFAULT CHARSET=latin1;
+
+variable_temporal -> primer mensaje del usuario
+variable_temporal1 -> segundo mensaje del usuario
+variable_temporal2 -> tercer mensaje del usuario
+gpt_temporal -> primera respuesta de gpt
+gpt_temporal1 -> segunda respuesta de gpt
+gpt_temporal2 -> tercer respuesta de gpt
