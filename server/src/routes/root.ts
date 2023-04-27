@@ -109,7 +109,7 @@ router.post("/chatbot", async (req: Request, res: Response) => {
 
 router.get("/getData", (_req: Request, res: Response) => {
   const selectQuery =
-    "SELECT id, prompt, telegramApiKey, whatsappApiKey FROM bots";
+    "SELECT id, prompt, telegramApiKey, whatsappApiKey, whatsapp_enable, whatsappId FROM bots";
   pool.query(selectQuery, (error: MysqlError | null, results: Bot[]) => {
     if (error) {
       console.error(error);

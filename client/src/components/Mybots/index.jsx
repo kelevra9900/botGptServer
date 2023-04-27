@@ -117,6 +117,7 @@ export const Mybots = () => {
               <StyledTableCell align="center">Prompt&nbsp;</StyledTableCell>
               <StyledTableCell align="center">TelegramApiKey&nbsp;</StyledTableCell>
               <StyledTableCell align="center">WhatsappApiKey&nbsp;</StyledTableCell>
+              <StyledTableCell align="center">Whatsapp ID&nbsp;</StyledTableCell>
               <StyledTableCell align="center">WhatsappEnable&nbsp;</StyledTableCell>
               <StyledTableCell align="center">TelegramEnable&nbsp;</StyledTableCell>
               <StyledTableCell align="center">Creation Status&nbsp;</StyledTableCell>
@@ -143,8 +144,25 @@ export const Mybots = () => {
                     <TextField
                       className="whatsappApiKey"
                       name="whatsappApikey"
+                      defaultValue={bot.whatsappApiKey}
                       type="text"
                       id={`${bot.id}`}
+                    />
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Box
+                    component="form"
+                    sx={{
+                      '& > :not(style)': { m: 1, width: '25ch' }
+                    }}
+                    noValidate
+                    autoComplete="off">
+                    <TextField
+                      className="whatsappApiKey"
+                      name="whatsappId"
+                      type="text"
+                      defaultValue={bot.whatsappId}
                     />
                   </Box>
                 </StyledTableCell>

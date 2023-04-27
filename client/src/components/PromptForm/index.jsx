@@ -119,6 +119,13 @@ export const PromptForm = ({ showBot }) => {
             />
             <TextField
               id="outlined-multiline-flexible"
+              label="Input your Whatsapp ID"
+              type="text"
+              name="whatsappId"
+              onChange={handleChange}
+            />
+            <TextField
+              id="outlined-multiline-flexible"
               label="Training user query 1"
               type="text"
               name="user_content1"
