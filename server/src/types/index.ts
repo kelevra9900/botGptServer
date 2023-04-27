@@ -5,6 +5,13 @@ export interface CreateBotRequest extends Bot {
   telegramApiKey: string;
   whatsappApiKey: string;
 }
+export interface BotRequest {
+  data: [wpApiKey];
+}
+
+interface wpApiKey {
+  whatsappApiKey: string;
+}
 
 export interface Bot {
   id: number;
@@ -35,3 +42,32 @@ export const CreateBotSchema = Joi.object<CreateBotRequest>({
   user_content2: Joi.string().required(),
   user_content3: Joi.string().required(),
 });
+
+///** Bot */
+
+export interface WPResponse {
+  object: string;
+  entry: Entry[];
+  from: any;
+  message: string;
+}
+
+export interface Entry {
+  id: string;
+  changes: Change[];
+}
+
+export interface Change {
+  value: Value;
+  field: string;
+}
+
+export interface Value {
+  messaging_product: string;
+  metadata: Metadata;
+}
+
+export interface Metadata {
+  display_phone_number: string;
+  phone_number_id: string;
+}

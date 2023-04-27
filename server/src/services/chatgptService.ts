@@ -8,27 +8,49 @@ import {
   userContentFixed2,
 } from "../utils/config";
 
-const API_KEY = process.env.OPENAI_API_KEY;
-
-const conf = new Configuration({
-  apiKey: API_KEY,
-});
-const openai = new OpenAIApi(conf);
-
 export async function GetMessageChatGPT(text: string) {
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: text,
-    max_tokens: 100,
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
   });
-
-  if (response.status == 200 && response.data.choices.length > 0) {
-    return response.data.choices[0].text;
+  const openai = new OpenAIApi(configuration);
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: text,
+      max_tokens: 150,
+    });
+    return completion.data.choices[0].text;
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
+    }
   }
-  return null;
+  // const completion = await openai.createCompletion({
+  //   model: "text-davinci-003",
+  //   prompt: text,
+  // });
+
+  // console.log("====================");
+  // console.log("response GPT", completion);
+  // console.log("====================");
+
+  // if (completion.status == 200 && completion.data.choices.length > 0) {
+  //   return completion.data.choices[0].text;
+  // }
+  // return null;
 }
 
 export async function completionWithNewGpt(message: string) {
+  const API_KEY = process.env.OPENAI_API_KEY;
+
+  const conf = new Configuration({
+    apiKey: API_KEY,
+  });
+  const openai = new OpenAIApi(conf);
+
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
@@ -59,6 +81,13 @@ export async function runCompletionWithMemory({
   memory,
   gptMemory,
 }: Memory): Promise<any> {
+  const API_KEY = process.env.OPENAI_API_KEY;
+
+  const conf = new Configuration({
+    apiKey: API_KEY,
+  });
+  const openai = new OpenAIApi(conf);
+
   const messages = [
     { role: "system", content: promptGpt },
     { role: "user", content: userContentFixed1 },
@@ -117,8 +146,11 @@ export async function sendMessage(
   });
 
   try {
-    await session.post("/messages", payload);
-    return { message: message, status: 200 };
+    const response = await session.post("/messages", payload);
+    console.log("========= response ==========");
+    console.log("Message sent:", response.data);
+    console.log("========= response ==========");
+    return { message: "Message sent", status: 200 };
   } catch (error) {
     console.error("Error while sending the message:", error.response.data);
     return { message: "Error while sending the message", status: 500 };

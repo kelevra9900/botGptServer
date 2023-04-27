@@ -12,8 +12,11 @@ import {
   userContentFixed1,
   userContentFixed2,
 } from "../utils/config";
-
-const whatsappBusinessId = `110564661969436`;
+import { GetTextUser } from "./whatsapp";
+import { Process } from "../common/whatsapp/processMessage";
+import * as fs from "fs";
+const myConsole = new console.Console(fs.createWriteStream("./log.txt"));
+// const whatsappBusinessId = `110564661969436`;
 
 export const createBot = async (
   req: Request,
@@ -120,7 +123,12 @@ export async function runCompletionWithMemory(
       ];
 }
 
-export async function sendMessage(sender: string, message: string) {
+export async function sendMessage(
+  sender: string,
+  message: string,
+  token?: string,
+  wpId?: string
+) {
   const payload = {
     messaging_product: "whatsapp",
     to: `${sender}`,
@@ -128,11 +136,11 @@ export async function sendMessage(sender: string, message: string) {
   };
 
   const session = axios.create({
-    baseURL: `https://graph.facebook.com/v16.0/${whatsappBusinessId}`,
+    baseURL: `https://graph.facebook.com/v16.0/${wpId}`,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${fb_token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -144,3 +152,29 @@ export async function sendMessage(sender: string, message: string) {
     return { message: "Error while sending the message", status: 500 };
   }
 }
+
+export const receivedMessageV1 = (req: Request, res: Response) => {
+  try {
+    const entry = req.body["entry"][0];
+    const changes = entry["changes"][0];
+    const value = changes["value"];
+    const messageObject = value["messages"];
+
+    if (typeof messageObject != "undefined") {
+      const messages = messageObject[0];
+      const number = messages["from"];
+
+      const text = GetTextUser(messages);
+
+      if (text != "") {
+        myConsole.log("Mensaje recibido: " + text);
+        myConsole.log("Número: " + number);
+        Process(text, number);
+      }
+    }
+    res.send("EVENT_RECEIVED");
+  } catch (e) {
+    console.log(e);
+    res.send("EVENT_RECEIVED");
+  }
+};

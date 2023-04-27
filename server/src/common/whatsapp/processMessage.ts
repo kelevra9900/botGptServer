@@ -2,7 +2,19 @@ import { SendMessageWhatsApp } from "../../services/whatsappService";
 import { GetMessageChatGPT } from "../../services/chatgptService";
 import { MessageText } from "./whatsappModel";
 
-export async function Process(textUser: string, number: number) {
+type MessageT = {
+  textUser: string;
+  number: number;
+  botId?: string;
+  whatsappApiKey?: string;
+};
+
+export async function Process({
+  textUser,
+  number,
+  botId,
+  whatsappApiKey,
+}: MessageT) {
   textUser = textUser.toLowerCase();
   const models = [];
 
@@ -16,7 +28,18 @@ export async function Process(textUser: string, number: number) {
     models.push(model);
   }
 
-  models.forEach((model) => {
-    SendMessageWhatsApp(model);
+  // models.forEach((model) => {
+  //   SendMessageWhatsApp(model);
+  // });
+  // Return response of sendMessageWhatsApp
+  models.forEach(async (model) => {
+    const response = await SendMessageWhatsApp({
+      data: model,
+      botId,
+      wppToken: whatsappApiKey,
+    });
+    console.log(response);
   });
+
+  return "OK";
 }

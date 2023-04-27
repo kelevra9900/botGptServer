@@ -23,8 +23,13 @@ export const verifyToken = (req: Request | any, res: Response) => {
   }
 };
 
-export const receivedMessage = (req: Request, res: Response) => {
+export async function receivedMessage(req: Request, res: Response) {
   try {
+    // Extract the token from the headers of the request
+    const wpToken = req.headers["authorization"] as string;
+    const sanitizedToken = wpToken.replace("Bearer ", "");
+
+    console.log(wpToken);
     const entry = req.body["entry"][0];
     const changes = entry["changes"][0];
     const value = changes["value"];
@@ -33,20 +38,29 @@ export const receivedMessage = (req: Request, res: Response) => {
     if (typeof messageObject != "undefined") {
       const messages = messageObject[0];
       const number = messages["from"];
+      const botId = entry.id;
 
       const text = GetTextUser(messages);
 
       if (text != "") {
-        Process(text, number);
+        myConsole.log("Mensaje recibido: " + text);
+        myConsole.log("Número: " + number);
+        const resProcess = await Process({
+          textUser: text,
+          number,
+          botId,
+          whatsappApiKey: sanitizedToken,
+        });
+        myConsole.log("Mensaje enviado: " + resProcess);
       }
     }
 
     res.send("EVENT_RECEIVED");
   } catch (e) {
-    myConsole.log(e);
+    myConsole.log(JSON.stringify(e));
     res.send("EVENT_RECEIVED");
   }
-};
+}
 
 export function GetTextUser(messages: any) {
   let text = "";
@@ -68,12 +82,4 @@ export function GetTextUser(messages: any) {
     myConsole.log("sin mensaje");
   }
   return text;
-}
-
-// getMemorieGpt(sender, 3, respuesta[0]),
-function getMemorieGpt({ sender, number, response }): any {
-  throw new Error("Function not implemented.");
-}
-function readMemoriesGpt(sender: string, arg1: any): any {
-  throw new Error("Function not implemented.");
 }
