@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { Configuration, OpenAIApi } from "openai";
 import mysql from "mysql";
+import { Bot } from "../types";
 
 dotenv.config();
 
@@ -174,5 +175,14 @@ export async function getMemorie(senderId: string, memory: number) {
     console.log("la memoria de usuario es : " + data);
 
     return data;
+  }
+}
+
+export async function searchBot(botId: string): Promise<Bot> {
+  const result = await queryAsync(
+    `SELECT * FROM ${database}.bots WHERE whatsappId = '${botId}'`
+  );
+  if (result[0]) {
+    return result[0];
   }
 }

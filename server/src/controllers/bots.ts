@@ -152,29 +152,3 @@ export async function sendMessage(
     return { message: "Error while sending the message", status: 500 };
   }
 }
-
-export const receivedMessageV1 = (req: Request, res: Response) => {
-  try {
-    const entry = req.body["entry"][0];
-    const changes = entry["changes"][0];
-    const value = changes["value"];
-    const messageObject = value["messages"];
-
-    if (typeof messageObject != "undefined") {
-      const messages = messageObject[0];
-      const number = messages["from"];
-
-      const text = GetTextUser(messages);
-
-      if (text != "") {
-        myConsole.log("Mensaje recibido: " + text);
-        myConsole.log("Número: " + number);
-        Process(text, number);
-      }
-    }
-    res.send("EVENT_RECEIVED");
-  } catch (e) {
-    console.log(e);
-    res.send("EVENT_RECEIVED");
-  }
-};

@@ -9,9 +9,6 @@ type Message = {
   wppToken: string;
 };
 export async function SendMessageWhatsApp({ data, botId, wppToken }: Message) {
-  console.log("botid", botId);
-  console.log("whatsappApiKey", wppToken);
-  console.log("data", data);
   const session = axios.create({
     baseURL: `https://graph.facebook.com/v16.0/${botId}`,
     headers: {
@@ -28,20 +25,4 @@ export async function SendMessageWhatsApp({ data, botId, wppToken }: Message) {
     console.error("Error while sending the message:", error.response.data);
     return { message: "Error while sending the message", status: 500 };
   }
-  // try {
-  //   const response = await axios.post(
-  //     `https://graph.facebook.com/v16.0/${FB_ID}/messages`,
-  //     data,
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${TOKEN}`,
-  //       },
-  //     }
-  //   );
-
-  //   return response.data;
-  // } catch (error) {
-  //   console.log(error);
-  // }
 }

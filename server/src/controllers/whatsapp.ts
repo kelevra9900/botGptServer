@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Process } from "../common/whatsapp/processMessage";
 import * as fs from "fs";
+import { searchBot } from "../utils/config";
+import { Bot } from "../types";
 
 const myConsole = new console.Console(fs.createWriteStream("./log.txt"));
 
@@ -29,7 +31,6 @@ export async function receivedMessage(req: Request, res: Response) {
     const wpToken = req.headers["authorization"] as string;
     const sanitizedToken = wpToken.replace("Bearer ", "");
 
-    console.log(wpToken);
     const entry = req.body["entry"][0];
     const changes = entry["changes"][0];
     const value = changes["value"];
@@ -40,18 +41,29 @@ export async function receivedMessage(req: Request, res: Response) {
       const number = messages["from"];
       const botId = entry.id;
 
+      const bot = await searchBot(botId);
+
+      if (typeof bot == "undefined") {
+        myConsole.log("Bot no encontrado");
+        return;
+      }
+
+      if (bot.whatsapp_enable === 0) {
+        myConsole.log("Bot no encontrado");
+        return;
+      }
+
       const text = GetTextUser(messages);
 
       if (text != "") {
         myConsole.log("Mensaje recibido: " + text);
         myConsole.log("Número: " + number);
-        const resProcess = await Process({
+        await Process({
           textUser: text,
           number,
           botId,
           whatsappApiKey: sanitizedToken,
         });
-        myConsole.log("Mensaje enviado: " + resProcess);
       }
     }
 
